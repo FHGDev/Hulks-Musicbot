@@ -142,7 +142,7 @@ bot.on("message", function(message) {
           play(connection, message, bot);
         })
         removedat(message)
-      })
+      }
 
       break;
     case "skip":
@@ -169,15 +169,15 @@ bot.on("ready", function() {
   console.log(`${bot.user.username} ready!`);
   console.log(``);
   // Set game
-  bot.user.setGame(`${config.prefix}help | ${bot.guilds.array().length} server(s)`);
+  bot.user.setGame(`${config.prefix}help | ${bot.guilds.array().length} guild(s)`);
 });
 
 bot.on("guildCreate", function() {
-  bot.user.setGame(`${config.prefix}help | ${bot.guilds.array().length} server(s)`);
+  bot.user.setGame(`${config.prefix}help | ${bot.guilds.array().length} guild(s)`);
 });
 
 bot.on("guildDelete", function() {
-  bot.user.setGame(`${config.prefix}help | ${bot.guilds.array().length} server(s)`);
+  bot.user.setGame(`${config.prefix}help | ${bot.guilds.array().length} guild(s)`);
 });
 
 bot.login(process.env.token)
