@@ -37,7 +37,7 @@ function play(connect, msg, bot) {
   server.queue.shift();
 
   server.dispatcher.on("end", function() {
-    if (server.queue[0]) {
+    if (server.queue[0]) { 
       play(connect, msg, bot)
     } else {
       connect.disconnect()
