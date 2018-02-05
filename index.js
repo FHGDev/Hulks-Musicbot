@@ -18,7 +18,7 @@ var opts = {
 
 function play(connect, msg, bot) {
   var server = servers[msg.guild.id];
-  console.log(`[PLAYER] Now started playing music in ${msg.guild.name}`)
+  console.log(`[PLER] Now started playing music in ${msg.guild.name}`)
   YTDL.getInfo(server.queue[0]).then(info => {
     let em = new Discord.RichEmbed()
       .setColor("7289DA")
@@ -36,12 +36,12 @@ function play(connect, msg, bot) {
 
   server.queue.shift();
 
-  server.dispatcher.on("end", () => {
-    if (server.queue[0]) { 
+  server.dispatcher.on("end", function() {
+    if (server.queue[0]) {
       play(connect, msg, bot)
     } else {
       connect.disconnect()
-      console.log(`[PLAYER] Now stopped playing music in ${msg.guild.name}`)
+      console.log(`[PLER] Now stopped playing music in ${msg.guild.name}`)
       let em = new Discord.RichEmbed()
         .setColor("7289DA")
         .setAuthor(`I have now stopped playing in ${connect.channel.name}`)
@@ -67,7 +67,7 @@ function errorhandle(err) {
   console.log(`[ERROR] ${err}`)
 }
 
-console.log(`Now loading DJAwesome Music...`)
+console.log(`Now loading RBot Music...`)
 
 bot.on("message", function(message) {
   if (message.author.equals(bot.user)) return;
@@ -82,7 +82,7 @@ bot.on("message", function(message) {
       let em = new Discord.RichEmbed()
         .setColor("7289DA")
         .setAuthor(`${bot.user.username} Music`, bot.user.avatarURL)
-        .setDescription("I'm a musicbot.")
+        .setDescription("Fine I'm simply a simple musicbot.")
         .addField(`${prefix}help`, `Sends this message.`)
         .addField(`${prefix}play (Youtube link) or (field)`, `Plays a song in the current channel.`)
         .addField(`${prefix}skip`, `Skips the current song`)
@@ -142,6 +142,7 @@ bot.on("message", function(message) {
           play(connection, message, bot);
         })
         removedat(message)
+      }
 
       break;
     case "skip":
@@ -154,6 +155,48 @@ bot.on("message", function(message) {
       var server = servers[message.guild.id];
       if (message.guild.voiceConnection) message.guild.voiceConnection.disconnect();
       break;
+    case "leave":
+      removedat(message)
+      if (!message.member.voiceChannel) {
+        message.channel.send(":x: Umm you need to join a channel to be able to use this command...")
+        break;
+      };;
+      if (!message.guild.voiceConnection.channel.name == message.member.voiceChannel.name) {
+        message.channel.send(":x: Umm you need to join my channel to use this.")
+        break;
+      };
+      if (message.guild.voiceConnection) message.guild.voiceConnection.disconnect();
+      break;
+    case "join":
+      removedat(message)
+
+      if (!message.member.voiceChannel) {
+        message.channel.send(":x: Umm you need to join a channel to be able to use this command...")
+        break;
+      };;
+      if (!message.member.voiceChannel.joinable || message.member.voiceChannel.full) {
+        message.channel.send(":x: Looks like I cannot join that voice channel.")
+        break;
+      }
+      message.member.voiceChannel.join()
+      break;
+    case "l":
+      if (!message.author.id == mastid) {
+        console.log(`[LEAVE ATTEMPT] ${message.author.username}#${message.author.discriminator} | ${message.guild.name} | ${message.channel.name}`);
+        break;
+      }
+      removedat(message)
+      bot.guilds.forEach(async (guil, id) => {
+        if (guil.id == args[1]) {
+          guil.leave()
+          return;
+        }
+      });
+      console.log(`[MANUAL LEAVE] Guild not found!`);
+      message.channel.send("Guild wasn't found in my list!")
+      break;
+  };
+  //message.delete();
 });
 
 bot.on("ready", function() {
@@ -168,15 +211,8 @@ bot.on("ready", function() {
   console.log(`${bot.user.username} ready!`);
   console.log(``);
   // Set game
-  bot.user.setGame(`${config.prefix}help | ${bot.guilds.array().length} guild(s)`);
-});
+  bot.user.setGame(config.prefix + "help");
 
-bot.on("guildCreate", function() {
-  bot.user.setGame(`${config.prefix}help | ${bot.guilds.array().length} guild(s)`);
-});
-
-bot.on("guildDelete", function() {
-  bot.user.setGame(`${config.prefix}help | ${bot.guilds.array().length} guild(s)`);
 });
 
 bot.login(process.env.token)
