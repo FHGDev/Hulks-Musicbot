@@ -18,7 +18,7 @@ var opts = {
 
 function play(connect, msg, bot) {
   var server = servers[msg.guild.id];
-  console.log(`[PLER] Now started playing music in ${msg.guild.name}`)
+  console.log(`[PLAYER] Now started playing music in ${msg.guild.name}`)
   YTDL.getInfo(server.queue[0]).then(info => {
     let em = new Discord.RichEmbed()
       .setColor("7289DA")
@@ -36,12 +36,12 @@ function play(connect, msg, bot) {
 
   server.queue.shift();
 
-  server.dispatcher.on("end", function() {
+  server.dispatcher.on("end", () => {
     if (server.queue[0]) { 
       play(connect, msg, bot)
     } else {
       connect.disconnect()
-      console.log(`[PLER] Now stopped playing music in ${msg.guild.name}`)
+      console.log(`[PLAYER] Now stopped playing music in ${msg.guild.name}`)
       let em = new Discord.RichEmbed()
         .setColor("7289DA")
         .setAuthor(`I have now stopped playing in ${connect.channel.name}`)
@@ -67,7 +67,7 @@ function errorhandle(err) {
   console.log(`[ERROR] ${err}`)
 }
 
-console.log(`Now loading RBot Music...`)
+console.log(`Now loading DJAwesome Music...`)
 
 bot.on("message", function(message) {
   if (message.author.equals(bot.user)) return;
@@ -82,7 +82,7 @@ bot.on("message", function(message) {
       let em = new Discord.RichEmbed()
         .setColor("7289DA")
         .setAuthor(`${bot.user.username} Music`, bot.user.avatarURL)
-        .setDescription("Fine I'm simply a simple musicbot.")
+        .setDescription("I'm a musicbot.")
         .addField(`${prefix}help`, `Sends this message.`)
         .addField(`${prefix}play (Youtube link) or (field)`, `Plays a song in the current channel.`)
         .addField(`${prefix}skip`, `Skips the current song`)
@@ -142,7 +142,6 @@ bot.on("message", function(message) {
           play(connection, message, bot);
         })
         removedat(message)
-      }
 
       break;
     case "skip":
